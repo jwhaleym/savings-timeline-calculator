@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Savings Timeline Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      max-width: 600px;
+      margin: auto;
+    }
+    input, select {
+      padding: 8px;
+      margin: 10px 0;
+      width: 100%;
+    }
+    button {
+      padding: 10px;
+      width: 100%;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .results {
+      margin-top: 20px;
+      background-color: #f3f3f3;
+      padding: 15px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>💰 Savings Timeline Calculator</h2>
+
+  <label>How much do you plan to save each time?</label>
+  <input type="number" id="amount" placeholder="$ Amount" />
+
+  <label>How often will you save?</label>
+  <select id="frequency">
+    <option value="52">Weekly</option>
+    <option value="26">Bi-Weekly</option>
+    <option value="12">Monthly</option>
+  </select>
+
+  <label>Optional: Annual Interest Rate (%)</label>
+  <input type="number" id="interest" placeholder="e.g. 2" />
+
+  <button onclick="calculateSavings()">Calculate Savings</button>
+
+  <div class="results" id="results" style="display:none;"></div>
+
+  <script>
+    function calculateSavings() {
+      const amount = parseFloat(document.getElementById("amount").value);
+      const frequency = parseInt(document.getElementById("frequency").value);
+      const interestRate = parseFloat(document.getElementById("interest").value || 0) / 100;
+
+      const periods = {
+        "6 months": 0.5,
+        "12 months": 1,
+        "24 months": 2
+      };
+
+      let output = "<h3>Estimated Savings:</h3><ul>";
+
+      for (let period in periods) {
+        let months = periods[period] * 12;
+        let totalContributions = amount * frequency * periods[period];
+        let totalSavings = totalContributions;
+
+        if (interestRate > 0) {
+          const monthlyRate = interestRate / 12;
+          for (let i = 0; i < months; i++) {
+            totalSavings += (totalSavings * monthlyRate);
+          }
+        }
+
+        output += `<li><strong>${period}</strong>: $${totalSavings.toFixed(2)}</li>`;
+      }
+
+      output += "</ul>";
+      document.getElementById("results").innerHTML = output;
+      document.getElementById("results").style.display = "block";
+    }
+  </script>
+
+</body>
+</html>
